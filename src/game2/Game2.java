@@ -24,7 +24,7 @@ public class Game2 implements Constants {
                 new Thing(new Posn(tRADIUS + FallWorld.randInt(0, 14) * dRADIUS * 2, tRADIUS),
                         tRADIUS, 0, 1, tCOLOR),
                 new Thing(new Posn(tRADIUS + FallWorld.randInt(0, 14) * dRADIUS * 2, tRADIUS),
-                        tRADIUS, 0, 1, tCOLOR), 0);
+                        tRADIUS, 0, 1, tCOLOR), 0, 1);
         w2.bigBang(wWIDTH, wHEIGHT, 0.04);
     }
 }

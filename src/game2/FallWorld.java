@@ -13,6 +13,7 @@ public class FallWorld extends World implements Constants {
     Thing thing2;
     Thing thing3;
     int score;
+    int lives;
 
     // Generates random integers used in placing Things
     public static int randInt(int min, int max) {
@@ -22,27 +23,33 @@ public class FallWorld extends World implements Constants {
     }
 
     // Constructor for the world
-    public FallWorld(Dodger dodger, Thing thing1, Thing thing2, Thing thing3, int score) {
+    public FallWorld(Dodger dodger, Thing thing1, Thing thing2, Thing thing3,
+            int score, int lives) {
         super();
         this.dodger = dodger;
         this.thing1 = thing1;
         this.thing2 = thing2;
         this.thing3 = thing3;
         this.score = score;
+        this.lives = lives;
     }
-    
-    public int getScore(FallWorld fw){
+
+    public int getScore(FallWorld fw) {
         return fw.score;
+    }
+
+    public int getLives(FallWorld fw) {
+        return fw.lives;
     }
 
     //Move Dodger on key presses
     public World onKeyEvent(String key) {
         if (key.equals("up") || key.equals("down")) {
             return new FallWorld(this.dodger, this.thing1, this.thing2,
-                    this.thing3, this.score);
+                    this.thing3, this.score, this.lives);
         } else {
             return new FallWorld(this.dodger.moveDodger(key), this.thing1,
-                    this.thing2, this.thing3, this.score);
+                    this.thing2, this.thing3, this.score, this.lives);
         }
     }
 
@@ -55,16 +62,18 @@ public class FallWorld extends World implements Constants {
         if (this.dodger.outOfBounds(this.width, this.height)) {
             return this.endOfWorld("OutOfBounds");
         }
-        // If the thing3 is out of bounds: 
+        // If the things are out of bounds: 
         // - 'Reset' all things to initial Y with random X
         // - Increment score
         if (this.thing3.atBounds(this.width, this.height)) {
             int closeX = this.dodger.center.x;
-            this.thing1 = new Thing(new Posn(closeX + randInt(-2, -1) * dRADIUS * 2, -dRADIUS),
+            this.thing1 = new Thing(new Posn(closeX + randInt(-2, -1) * dRADIUS * 2,
+                    -dRADIUS),
                     tRADIUS, 0, 1, tCOLOR);
             this.thing2 = new Thing(new Posn(closeX, -dRADIUS),
                     tRADIUS, 0, 1, tCOLOR);
-            this.thing3 = new Thing(new Posn(closeX + randInt(1, 2) * dRADIUS * 2, -dRADIUS),
+            this.thing3 = new Thing(new Posn(closeX + randInt(1, 2) * dRADIUS * 2,
+                    -dRADIUS),
                     tRADIUS, 0, 1, tCOLOR);
             if (this.thing1.center.x < 0) {
                 this.thing1 = new Thing(new Posn(0 + dRADIUS, -dRADIUS),
@@ -76,15 +85,24 @@ public class FallWorld extends World implements Constants {
             }
             return new FallWorld(this.dodger, this.thing1.moveThing(),
                     this.thing2.moveThing(), this.thing3.moveThing(),
-                    this.score = this.score + 1);
+                    this.score = this.score + 1, this.lives);
         }
-        // If Dodger hit either thing1 or thing2, end the world
+        // If Dodger hit any of the things, check lives left:
+        //  - If 1 or more lives, decrement lives and continue world
+        //  - If 0 lives, end the world
         if (this.dodger.didCollide(thing1) || this.dodger.didCollide(thing2)) {
-            return this.endOfWorld("DodgerThingCollision");
-        } // Otherwise move thing1 and thing2.
+            if (this.lives >= 1) {
+                return new FallWorld(this.dodger, this.thing1.moveThing(),
+                        this.thing2.moveThing(), this.thing3.moveThing(),
+                        this.score, this.lives = this.lives - 1);
+            } else {
+                return this.endOfWorld("DodgerThingCollision");
+            }
+        } // Otherwise move the things.
         else {
             return new FallWorld(this.dodger, this.thing1.moveThing(),
-                    this.thing2.moveThing(), this.thing3.moveThing(), this.score);
+                    this.thing2.moveThing(), this.thing3.moveThing(),
+                    this.score, this.lives);
         }
     }
 
@@ -97,11 +115,13 @@ public class FallWorld extends World implements Constants {
     public WorldImage makeImage() {
         return new OverlayImages(this.background,
                 new OverlayImages(new TextImage(new Posn(this.width / 2, dRADIUS),
-                                "SCORE: " + this.score, bCOLOR),
-                new OverlayImages(this.dodger.dodgerImage(),
-                        new OverlayImages(this.thing1.thingImage(),
-                                new OverlayImages(this.thing2.thingImage(),
-                                        this.thing3.thingImage())))));
+                                "SCORE: " + this.score
+                                + "          LIVES: " + this.lives,
+                                bCOLOR),
+                        new OverlayImages(this.dodger.dodgerImage(),
+                                new OverlayImages(this.thing1.thingImage(),
+                                        new OverlayImages(this.thing2.thingImage(),
+                                                this.thing3.thingImage())))));
     }
 
     // Produce image of world by adding fail state explanation to background
@@ -118,14 +138,13 @@ public class FallWorld extends World implements Constants {
         if (this.dodger.outOfBounds(this.width, this.height)) {
             return new WorldEnd(true, new OverlayImages(this.makeImage(),
                     new TextImage(new Posn(this.width / 2, this.height / 2),
-                            "Out of Bounds!" + " SCORE: " + this.score, sCOLOR)));
+                            "Out of Bounds!", sCOLOR)));
         }
-        if (this.dodger.didCollide(thing1) || this.dodger.didCollide(thing2)
-                || this.dodger.didCollide(thing3)) {
+        if ((this.dodger.didCollide(thing1) || this.dodger.didCollide(thing2)
+                || this.dodger.didCollide(thing3)) && this.lives == 1) {
             return new WorldEnd(true, new OverlayImages(this.makeImage(),
                     new TextImage(new Posn(this.width / 2, this.height / 2),
-                            "You didn't 'Dodge the Thing'!" + " SCORE: "
-                            + this.score, sCOLOR)));
+                            "You didn't 'Dodge the Thing'!", sCOLOR)));
         } else {
             return new WorldEnd(false, this.makeImage());
         }

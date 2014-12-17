@@ -33,12 +33,12 @@ public class DodgeWorld extends World implements Constants {
         this.score = score;
         this.lives = lives;
     }
-    
-    public int getScore(DodgeWorld dw){
+
+    public int getScore(DodgeWorld dw) {
         return dw.score;
     }
-    
-    public int getLives(DodgeWorld dw){
+
+    public int getLives(DodgeWorld dw) {
         return dw.lives;
     }
 
@@ -66,7 +66,8 @@ public class DodgeWorld extends World implements Constants {
         if (this.thing1.atBounds(this.width, this.height)) {
             int closeX = this.dodger.center.x;
             int closeY = this.dodger.center.y;
-            this.thing1 = new Thing(new Posn(-dRADIUS, closeY + randInt(0, 2) * dRADIUS * 2),
+            this.thing1 = new Thing(new Posn(-dRADIUS,
+                    closeY + randInt(0, 2) * dRADIUS * 2),
                     tRADIUS, 1, 0, tCOLOR);
             if (this.thing1.center.y > height) {
                 this.thing1 = new Thing(new Posn(-dRADIUS, closeY),
@@ -76,7 +77,8 @@ public class DodgeWorld extends World implements Constants {
                 this.thing1 = new Thing(new Posn(-dRADIUS, closeY),
                         tRADIUS, 1, 0, tCOLOR);
             }
-            this.thing2 = new Thing(new Posn(closeX + randInt(0, 2) * dRADIUS * 2, -dRADIUS),
+            this.thing2 = new Thing(new Posn(closeX + randInt(0, 2) * dRADIUS * 2,
+                    -dRADIUS),
                     tRADIUS, 0, 1, tCOLOR);
             if (this.thing2.center.x > width) {
                 this.thing2 = new Thing(new Posn(closeX, -dRADIUS),
@@ -136,7 +138,8 @@ public class DodgeWorld extends World implements Constants {
     public WorldImage makeImage() {
         return new OverlayImages(this.background,
                 new OverlayImages(new TextImage(new Posn(this.width / 2, dRADIUS),
-                                "SCORE: " + this.score + "          LIVES: " + this.lives,
+                                "SCORE: " + this.score
+                                + "          LIVES: " + this.lives,
                                 bCOLOR),
                         new OverlayImages(this.dodger.dodgerImage(),
                                 new OverlayImages(this.explosion.explosionImage(),
@@ -170,7 +173,7 @@ public class DodgeWorld extends World implements Constants {
         if (this.dodger.didCollide(explosion) && this.lives == 1) {
             return new WorldEnd(true, new OverlayImages(this.makeImage(),
                     new TextImage(new Posn(this.width / 2, this.height / 2),
-                            "You blew up!" , sCOLOR)));
+                            "You blew up!", sCOLOR)));
         } else {
             return new WorldEnd(false, this.makeImage());
         }
