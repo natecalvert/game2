@@ -33,7 +33,7 @@ public class Thing implements Constants{
             return new Thing(new Posn(this.center.x + tRADIUS * 2, this.center.y),
                     this.radius, this.dX, this.dY, this.color);
         } else { //This should NEVER HAPPEN.
-            return new Thing(new Posn(300, 300), 300, 1, 1, Color.ORANGE);
+            return new Thing(new Posn(300, 300), 300, 1, 1, Color.MAGENTA);
         }
     }
 

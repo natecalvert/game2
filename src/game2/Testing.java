@@ -3,7 +3,8 @@ package game2;
 import javalib.worldimages.*;
 import tester.Tester;
 
-public class Testing implements Constants{
+public class Testing implements Constants {
+
     // examples of the Dodger class
     Dodger d1 = new Dodger(new Posn(300, 300), dRADIUS, dCOLOR);
     Dodger d1Left = new Dodger(new Posn(260, 300), dRADIUS, dCOLOR);
@@ -38,22 +39,22 @@ public class Testing implements Constants{
     Explosion e1 = new Explosion(new Posn(300, 300), eRADIUS, eCOLOR);
 
     // examples of the DodgeWorld class
-    DodgeWorld dw1 = new DodgeWorld(d1, t1, t2, e0, 0);
-    DodgeWorld dw1Left = new DodgeWorld(d1Left, t1, t2, e0, 0);
-    DodgeWorld dw1Right = new DodgeWorld(d1Right, t1, t2, e0, 0);
-    DodgeWorld dw1Up = new DodgeWorld(d1Up, t1, t2, e0, 0);
-    DodgeWorld dw1Down = new DodgeWorld(d1Down, t1, t2, e0, 0);
+    DodgeWorld dw1 = new DodgeWorld(d1, t1, t2, e0, 0, 0);
+    DodgeWorld dw1Left = new DodgeWorld(d1Left, t1, t2, e0, 0, 0);
+    DodgeWorld dw1Right = new DodgeWorld(d1Right, t1, t2, e0, 0, 0);
+    DodgeWorld dw1Up = new DodgeWorld(d1Up, t1, t2, e0, 0, 0);
+    DodgeWorld dw1Down = new DodgeWorld(d1Down, t1, t2, e0, 0, 0);
 
-    DodgeWorld dw2 = new DodgeWorld(d2, t1, t2, e0, 0);
-//    DodgeWorld dw3 = new DodgeWorld(d1, t3, t4, e0, 0);
-//    DodgeWorld dw3Tick = new DodgeWorld(d1, t5, t6, e0, 1);
-    DodgeWorld dw4 = new DodgeWorld(d1, t1, t2Down, e0, 0);
-    DodgeWorld dw5 = new DodgeWorld(d1, t1Right, t2, e0, 0);
-    DodgeWorld dw6 = new DodgeWorld(d1Left, t1Right, t2Down, e0, 0);
-    DodgeWorld dw6Tick = new DodgeWorld(d1Left, t1Right2, t2Down2, e0, 0);
-    DodgeWorld dw7 = new DodgeWorld(d0, t1, t2, e0, 0);
-    DodgeWorld dw7Tick = new DodgeWorld(d0, t1Right, t2Down, e1, 0);
-    DodgeWorld dw8 = new DodgeWorld(d1, t1, t2, e1, 0);
+    DodgeWorld dw2 = new DodgeWorld(d2, t1, t2, e0, 0, 0);
+//    DodgeWorld dw3 = new DodgeWorld(d1, t3, t4, e0, 0, 0);
+//    DodgeWorld dw3Tick = new DodgeWorld(d1, t5, t6, e0, 1, 0);
+    DodgeWorld dw4 = new DodgeWorld(d1, t1, t2Down, e0, 0, 0);
+    DodgeWorld dw5 = new DodgeWorld(d1, t1Right, t2, e0, 0, 0);
+    DodgeWorld dw6 = new DodgeWorld(d1Left, t1Right, t2Down, e0, 0, 0);
+    DodgeWorld dw6Tick = new DodgeWorld(d1Left, t1Right2, t2Down2, e0, 0, 0);
+    DodgeWorld dw7 = new DodgeWorld(d0, t1, t2, e0, 0, 0);
+    DodgeWorld dw7Tick = new DodgeWorld(d0, t1Right, t2Down, e1, 0, 0);
+    DodgeWorld dw8 = new DodgeWorld(d1, t1, t2, e1, 0, 0);
 
     // Test method moveDodger in Dodger class
     boolean testMoveDodger(Tester t) {
