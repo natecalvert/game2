@@ -3,6 +3,7 @@ package game2;
 import javalib.funworld.*;
 import javalib.worldimages.*;
 import java.util.Random;
+import static java.lang.Math.*;
 
 public class FallWorld extends World implements Constants {
 
@@ -14,6 +15,7 @@ public class FallWorld extends World implements Constants {
     Thing thing3;
     int score;
     int lives;
+    int rounds;
 
     // Generates random integers used in placing Things
     public static int randInt(int min, int max) {
@@ -24,7 +26,7 @@ public class FallWorld extends World implements Constants {
 
     // Constructor for the world
     public FallWorld(Dodger dodger, Thing thing1, Thing thing2, Thing thing3,
-            int score, int lives) {
+            int score, int lives, int rounds) {
         super();
         this.dodger = dodger;
         this.thing1 = thing1;
@@ -32,24 +34,25 @@ public class FallWorld extends World implements Constants {
         this.thing3 = thing3;
         this.score = score;
         this.lives = lives;
+        this.rounds = rounds;
     }
 
     public int getScore(FallWorld fw) {
         return fw.score;
     }
 
-    public int getLives(FallWorld fw) {
-        return fw.lives;
+    public void setLives(int lives) {
+        this.lives = lives;
     }
 
     //Move Dodger on key presses
     public World onKeyEvent(String key) {
         if (key.equals("up") || key.equals("down")) {
             return new FallWorld(this.dodger, this.thing1, this.thing2,
-                    this.thing3, this.score, this.lives);
+                    this.thing3, this.score, this.lives, this.rounds);
         } else {
             return new FallWorld(this.dodger.moveDodger(key), this.thing1,
-                    this.thing2, this.thing3, this.score, this.lives);
+                    this.thing2, this.thing3, this.score, this.lives, this.rounds);
         }
     }
 
@@ -85,7 +88,7 @@ public class FallWorld extends World implements Constants {
             }
             return new FallWorld(this.dodger, this.thing1.moveThing(),
                     this.thing2.moveThing(), this.thing3.moveThing(),
-                    this.score = this.score + 1, this.lives);
+                    this.score = this.score + 1, this.lives, this.rounds);
         }
         // If Dodger hit any of the things, check lives left:
         //  - If 1 or more lives, decrement lives and continue world
@@ -94,7 +97,7 @@ public class FallWorld extends World implements Constants {
             if (this.lives >= 1) {
                 return new FallWorld(this.dodger, this.thing1.moveThing(),
                         this.thing2.moveThing(), this.thing3.moveThing(),
-                        this.score, this.lives = this.lives - 1);
+                        this.score, this.lives = this.lives - 1, this.rounds);
             } else {
                 return this.endOfWorld("DodgerThingCollision");
             }
@@ -102,7 +105,7 @@ public class FallWorld extends World implements Constants {
         else {
             return new FallWorld(this.dodger, this.thing1.moveThing(),
                     this.thing2.moveThing(), this.thing3.moveThing(),
-                    this.score, this.lives);
+                    this.score, this.lives, this.rounds);
         }
     }
 
@@ -135,18 +138,39 @@ public class FallWorld extends World implements Constants {
     // - When Dodger is out of bounds
     // - If Dodger hit a Thing
     public WorldEnd worldEnds() {
-        if (this.dodger.outOfBounds(this.width, this.height)) {
+        if (this.rounds == 0) {
             return new WorldEnd(true, new OverlayImages(this.makeImage(),
                     new TextImage(new Posn(this.width / 2, this.height / 2),
-                            "Out of Bounds!", sCOLOR)));
-        }
-        if ((this.dodger.didCollide(thing1) || this.dodger.didCollide(thing2)
-                || this.dodger.didCollide(thing3)) && this.lives == 1) {
-            return new WorldEnd(true, new OverlayImages(this.makeImage(),
-                    new TextImage(new Posn(this.width / 2, this.height / 2),
-                            "You didn't 'Dodge the Thing'!", sCOLOR)));
+                            "Round 5 Over! Your final score is: " + this.score, sCOLOR)));
         } else {
-            return new WorldEnd(false, this.makeImage());
+            if (this.dodger.outOfBounds(this.width, this.height)) {
+                DodgeWorld w1 = new DodgeWorld(new Dodger(new Posn(wWIDTH / 2, wHEIGHT / 2), dRADIUS, dCOLOR),
+                        new Thing(new Posn(tRADIUS, tRADIUS + DodgeWorld.randInt(0, 14) * dRADIUS * 2),
+                                tRADIUS, 1, 0, tCOLOR),
+                        new Thing(new Posn(tRADIUS + DodgeWorld.randInt(0, 14) * dRADIUS * 2, tRADIUS),
+                                tRADIUS, 0, 1, tCOLOR),
+                        new Explosion(new Posn(-eRADIUS, -eRADIUS), eRADIUS, eCOLOR), 
+                        this.score, max(this.score / 5, 1), this.rounds - 1);
+                w1.bigBang(wWIDTH, wHEIGHT, 0.07);
+                return new WorldEnd(true, new OverlayImages(this.makeImage(),
+                        new TextImage(new Posn(this.width / 2, this.height / 2),
+                                "Out of Bounds!", sCOLOR)));
+            }
+            if ((this.dodger.didCollide(thing1) || this.dodger.didCollide(thing2)
+                    || this.dodger.didCollide(thing3)) && this.lives == 1) {
+                DodgeWorld w1 = new DodgeWorld(new Dodger(new Posn(wWIDTH / 2, wHEIGHT / 2), dRADIUS, dCOLOR),
+                        new Thing(new Posn(tRADIUS, tRADIUS + DodgeWorld.randInt(0, 14) * dRADIUS * 2),
+                                tRADIUS, 1, 0, tCOLOR),
+                        new Thing(new Posn(tRADIUS + DodgeWorld.randInt(0, 14) * dRADIUS * 2, tRADIUS),
+                                tRADIUS, 0, 1, tCOLOR),
+                        new Explosion(new Posn(-eRADIUS, -eRADIUS), eRADIUS, eCOLOR), this.score, max(this.score / 5, 1), this.rounds - 1);
+                w1.bigBang(wWIDTH, wHEIGHT, 0.07);
+                return new WorldEnd(true, new OverlayImages(this.makeImage(),
+                        new TextImage(new Posn(this.width / 2, this.height / 2),
+                                "You didn't 'Dodge the Thing'!", sCOLOR)));
+            } else {
+                return new WorldEnd(false, this.makeImage());
+            }
         }
     }
 }
